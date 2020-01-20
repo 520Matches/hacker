@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+
 import sys
 import socket
 import getopt
@@ -87,6 +94,7 @@ def server_loop():
 
     while True:
         client_socket,addr = server.accept()
+        print("accept a client")
         client_thread = threading.Thread(target=client_handler,args=(client_socket,))
         client_thread.start()
 
@@ -108,10 +116,10 @@ def client_sender(buffer):
                 if recv_len < 4096:
 					break
 
-                print response,
-                buffer = raw_input("")
-                buffer += "\n"    
-                client.send(buffer)
+            print response,
+            buffer = raw_input("")
+            buffer += "\n"    
+            client.send(buffer)
     except:
         print "[*] Exception! Exiting."
         client.close()
@@ -148,19 +156,19 @@ def client_handler(client_socket):
 
 			client_socket.send("Successfully saved file to %s\r\n" % upload_destination)
 		except:
-				client_socket.send("Failed to save file to %s\r\n" % upload_destination)
+			client_socket.send("Failed to save file to %s\r\n" % upload_destination)
 
 	if len(execute):
 		output = run_command(execute)
 		client_socket.send(output)
 	if command:
-		while True:
-			client_socket.send("<BHP:#> ")
-			cmd_buffer = ""
-			while "\n" not in cmd_buffer:
-				cmd_buffer += client_socket.recv(1024)
-
-			response = run_command(cmd_buffer)
-			client_socket.send(response)
-
+            while True:
+                client_socket.send("<BHP:#> ")
+                cmd_buffer = ""
+                print("send <BHP>")
+                while "\n" not in cmd_buffer:
+                    cmd_buffer += client_socket.recv(1024)
+                    response = run_command(cmd_buffer)
+                    client_socket.send(response)   
+            
 main()
